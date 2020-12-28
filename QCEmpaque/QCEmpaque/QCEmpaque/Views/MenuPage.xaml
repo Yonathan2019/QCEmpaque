@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}"
+             x:Class="QCEmpaque.Views.MenuPage"
+             BackgroundColor="#004130"
+             Opacity="0.8"
+             Title="Menu">
+    <ContentPage.Content>
+        <StackLayout Padding="5,20,5,5">
+            <Frame CornerRadius="50" BackgroundColor="White"
+                   Padding="15" WidthRequest="110" HorizontalOptions="Center">
+                <Image Source="icon2" 
+                   WidthRequest="100">
+                </Image>
+            </Frame>
+            <Frame BorderColor="DarkGray" 
+                   Padding="3"
+                   BackgroundColor="#004130"
+                   HeightRequest="30"
+                   Margin="5">
+                <StackLayout Margin="3" 
+                         Orientation="Horizontal"
+                         Spacing="10">
+                    <BoxView CornerRadius="15" 
+                             Color="ForestGreen"
+                             WidthRequest="15"
+                             HeightRequest="10"/>
+                    <Label Text="Bienvenido(a):"
+                   FontAttributes="Bold"
+                   FontSize="Small"
+                   TextColor="White"
+                   HorizontalOptions="Start">
+                    </Label>
+                    <Label Text="{Binding UserName}"
+                   FontAttributes="Bold"
+                   FontSize="Small"
+                   TextColor="White">
+                    </Label>
+                </StackLayout>
+            </Frame>
+            <ListView ItemsSource="{Binding Menus}"                      
+                      HasUnevenRows="True"                      
+                      RefreshCommand="{Binding RefreshCommandMenu, Mode=TwoWay}"
+                      SeparatorVisibility="None"
+                      BackgroundColor="#004130">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame CornerRadius="10"
+                                   HasShadow="True"
+                                   Margin="5"
+                                   BackgroundColor="DarkGray"
+                                   Padding="2">
+                                <Grid>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding NavigateCommand}">
+                                        </TapGestureRecognizer>
+                                    </Grid.GestureRecognizers>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Ico}"
+                                       WidthRequest="50"
+                                       HeightRequest="50">
+                                    </Image>
+                                    <Label Grid.Column="1"
+                                       FontAttributes="Bold"
+                                       FontSize="Small"
+                                       Text="{Binding Title}"
+                                       TextColor="White"
+                                       VerticalOptions="Center">
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>               
+            </ListView>
+            <StackLayout Margin="5" HeightRequest="50">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackLayout Grid.Column="0"
+                                 Grid.Row="0">
+                        <Button Text="Cerrar"
+                            BackgroundColor="Red"
+                            CornerRadius="10"
+                            Opacity="0.8"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            ImageSource="ic_exit_to_app"     
+                            Padding="2"
+                            HeightRequest="30"
+                            Command="{Binding ExitCommand}">
+                        </Button>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1"
+                                 Grid.Row="0">
+                        <Button Text="Sync"
+                                BackgroundColor="ForestGreen"
+                                CornerRadius="10"
+                                Opacity="0.8"                    
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                ImageSource="ic_sync"
+                                Padding="2"
+                                HeightRequest="30"
+                                Command="{Binding IrCommand}">
+                        </Button>
+                    </StackLayout>                    
+                </Grid>
+            </StackLayout>            
+            <StackLayout Grid.Column="0"
+                                 Grid.Row="1"
+                                 Grid.ColumnSpan="2">
+                <Label Text="{Binding Version, Mode=TwoWay}"
+                               VerticalOptions="CenterAndExpand" 
+                               HorizontalOptions="CenterAndExpand"
+                               FontAttributes="Bold"
+                               TextColor="White"></Label>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
