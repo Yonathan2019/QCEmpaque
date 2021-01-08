@@ -33,10 +33,10 @@
             //    App.Navigator.PushAsync(new SincronizaDatosPage());
             //}
 
-            if (this.PageName.ToLower() == string.Format("PerforadoPage").ToLower())
+            if (this.PageName.ToLower() == string.Format("VidaAnaquelPage").ToLower())
             {
-                //MainViewModel.GetInstance().Perforado = new PerforadoViewModel();
-                //App.Navigator.PushAsync(new PERFORADOPage());
+                MainViewModel.GetInstance().VidaAnaquel = new VidaAnaquelViewModel();
+                App.Navigator.PushAsync(new VidaAnaquelPage());
             }            
         }
 

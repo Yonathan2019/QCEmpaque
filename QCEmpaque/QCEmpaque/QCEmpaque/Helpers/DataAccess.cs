@@ -8,6 +8,9 @@
     using System.IO;
     using System.Linq;
     using Xamarin.Forms;
+    using QCEmpaque.Models;
+    using QCEmpaque.Models.DM;
+
     public class DataAccess : IDisposable
     {
         private SQLiteConnection connection;
@@ -19,7 +22,9 @@
             // config.Platform,
             Path.Combine(config.DirectoryDB, "qcemp.db3"));
             connection.CreateTable<UserLocal>();
-            connection.CreateTable<MenuLocal>();           
+            connection.CreateTable<MenuLocal>();
+            connection.CreateTable<EncabezadoIndicador>();
+            connection.CreateTable<Estante>();
         }
 
         public void Insert<T>(T model)

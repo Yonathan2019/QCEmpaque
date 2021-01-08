@@ -53,6 +53,7 @@
         public LoginViewModel Login { get; set; }
         public HomeViewModel Home { get; set; }
         public SincronizaViewModel Sincroniza { get; set; }
+        public VidaAnaquelViewModel VidaAnaquel { get; set; }
 
         #endregion
 

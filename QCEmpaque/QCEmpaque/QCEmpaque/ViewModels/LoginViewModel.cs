@@ -88,7 +88,7 @@
             this.ListaEmpacadora = new List<Empacadora>();
             this.IsRemembered = true;
             this.IsEnable = true;
-            FillFinca();
+            this.LlenarEmpacadoras();
         }
         #endregion
 
@@ -191,7 +191,9 @@
                 Settings.IdUser = propertiesuser.IdUsuario;
                 Settings.IdPerfil = propertiesuser.IdPerfil;
                 Settings.UserName = propertiesuser.NombreUsuario;
+                Settings.IdEmpacadora = SelectedEmpacadora.Id;
                 this.dataService.DeleteAllAndInsert(userlocal);
+                
             }
 
             this.dataService.DeleteAllTable<MenuLocal>();
@@ -209,7 +211,7 @@
             //await Application.Current.MainPage.Navigation.PushAsync(new NavierasPage()); //Redireccionamos a la homepage
             App.Current.MainPage = new MasterPage();
         }
-        private async void FillFinca()
+        private async void LlenarEmpacadoras()
         {
             try
             {
@@ -217,32 +219,25 @@
                 var connection = await apiService.CheckConnection();
                 if (!connection.IsSuccess)
                 {
-                    //this.IsRunning = false;
-                    //await Application.Current.MainPage.DisplayAlert(
-                    //    "Error",
-                    //    "No tiene acceso a internet, verfica tu coneccion",
-                    //    "Aceptar");
+                    this.IsRunning = false;
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        "No tiene acceso a internet, verfica tu coneccion",
+                        "Aceptar");
 
-                    //var fin = new Finca()
-                    //{
-                    //    Id = -1,
-                    //    Nombre = "No hay finca"
-                    //};
-                    //this.ListaFinca.Add(fin);
-                    //this.IsRunning = false;
-                    //return;
+                    var empa = new Empacadora()
+                    {
+                        Id = -1,
+                        Nombre = "No hay Empacadora"
+                    };
+                    this.ListaEmpacadora.Add(empa);
+                    this.IsRunning = false;
+                    return;
                 }
 
-                var emp = new Empacadora()
-                {
-                    Id = 3,
-                    Nombre = "Santa Rosa"
-                };
-                this.ListaEmpacadora.Add(emp);
-
-                //var urlbase = "api/dm/ut/?WithWildren=false";
-                //var token = await this.apiService.MyGetList<Finca>(UrlConexion.UrlConx, urlbase);
-                //this.ListaFinca = (List<Finca>)token.Result;
+                var urlbase = "api/dm/GetEmpacadoras";
+                var token = await this.apiService.MyGetList<Empacadora>(UrlConexion.UrlConx, urlbase);
+                this.ListaEmpacadora = (List<Empacadora>)token.Result;
                 this.IsRunning = false;
             }
             catch (System.Exception ex)

@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QCEmpaque.Views.VidaAnaquelPage"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}"
+             Title="Vida de Anaquel">
+    <ContentPage.Content>
+        <StackLayout BindingContext="{Binding VidaAnaquel }"
+                     Margin="8">
+            <ScrollView>
+                <StackLayout>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="400"/>
+                        </Grid.RowDefinitions>
+                        <StackLayout Grid.Row="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0" Grid.Row="0">
+                                    <Label Text="Fecha de Empaque"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                    <DatePicker FontSize="Small"
+                                                Date="{Binding FechaEmpaque, Mode=TwoWay}"></DatePicker>
+                                </StackLayout>
+                                <StackLayout Grid.Column="1" Grid.Row="0">
+                                    <Label Text="Estante de ubicacion"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                    <Picker Title="Seleccione Estante"
+                                        FontSize="Small"
+                                        ItemsSource="{Binding ListEstante, Mode=TwoWay}"
+                                        ItemDisplayBinding="{Binding Nombre, Mode=TwoWay}"
+                                        SelectedItem="{Binding SelectEstante, Mode=TwoWay}"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="Center">
+                                    </Picker>
+                                </StackLayout>
+                                <StackLayout Grid.Column="0" Grid.Row="1">
+                                    <Label Text="Fecha Almacenamiento"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                    <DatePicker FontSize="Small"
+                                                Date="{Binding FechaAlmacenamiento, Mode=TwoWay}"></DatePicker>
+                                </StackLayout>
+                                <StackLayout Grid.Column="1" Grid.Row="1">                                    
+                                    <Label Text="Leer Codigo"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"
+                                           TextColor="#3A705D"
+                                           HorizontalTextAlignment="Center">                                        
+                                    </Label>
+                                    <Image Source="ic_codigo_de_barras">
+                                       <Image.GestureRecognizers>
+                                          <TapGestureRecognizer
+                                             Command="{Binding LeerCommand}"
+                                             NumberOfTapsRequired="1" />
+                                         </Image.GestureRecognizers>
+                                    </Image>                                    
+                                </StackLayout>
+                                <StackLayout Grid.Column="0"
+                                             Grid.Row="2"
+                                             Grid.ColumnSpan="2">
+                                    <Label Text="Codigo Unico(Bach)"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                    <Entry Text="{Binding Codigo, Mode=TwoWay}">
+                                    </Entry>
+                                </StackLayout>
+                                <StackLayout Grid.Column="0"
+                                             Grid.Row="3"
+                                             Grid.ColumnSpan="2">
+                                    <Button Text="Guardar"
+                                            IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
+                                            Style="{StaticResource Key=btn_guardar}"
+                                            Command="{Binding AddCommand}"></Button>
+                                </StackLayout>
+                                <StackLayout Grid.Column="0" 
+                                             Grid.ColumnSpan="2"
+                                             Grid.Row="4"
+                                             Margin="0"
+                                             Padding="0">
+                                    <Label Text="Mis Cajas Almacenadas" 
+                                           HorizontalOptions="Center"
+                                           TextColor="#3A705D"
+                                           FontAttributes="Bold"
+                                           FontSize="20"></Label>
+                                    <BoxView Style="{StaticResource linea_divisor }">
+                                    </BoxView>
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                        <StackLayout Grid.Row="1">
+                            <CollectionView ItemsSource="{Binding Registros }"
+                                            SelectedItem="SelectRegistro"
+                                            SelectionMode="Multiple">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Padding="5"
+                                               CornerRadius="5"
+                                               IsClippedToBounds="False">
+                                            <Grid HeightRequest="100">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width=".1*"/>
+                                                    <ColumnDefinition Width=".3*"/>
+                                                    <ColumnDefinition Width=".6*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height=".5*"/>
+                                                    <RowDefinition Height=".5*"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Text="{Binding Fila }"
+                                                       FontSize="Large"                                                       
+                                                       FontAttributes="Bold"                                                       
+                                                       TextColor="#3A705D"
+                                                       Grid.RowSpan="2"
+                                                       Grid.Column="0"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"></Label>
+                                                <Label Text="{Binding Variable2}"
+                                                       FontSize="Medium"                                                       
+                                                       FontAttributes="Bold"                                                       
+                                                       TextColor="#3A705D"
+                                                       Grid.RowSpan="2"
+                                                       Grid.Column="1"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"></Label>
+                                                <Label Grid.Column="2"
+                                                       Grid.Row="0"
+                                                       Text="{Binding Variable1}"
+                                                       FontSize="Small"
+                                                       FontAttributes="Bold"                                                       
+                                                       TextColor="Black"></Label>
+                                                <Label Grid.Column="2"
+                                                       Grid.Row="1"
+                                                       Text="{Binding Fecha}"
+                                                       FontSize="Medium"
+                                                       FontAttributes="Bold"                                                       
+                                                       TextColor="DarkGray"></Label>
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

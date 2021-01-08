@@ -8,7 +8,9 @@
     <ContentPage.Content>
         <ScrollView BindingContext="{Binding Login}">
             <StackLayout Padding="5" VerticalOptions="CenterAndExpand">
-                <Image Source="icon2" HorizontalOptions="StartAndExpand" WidthRequest="170">
+                <Image Source="icon2" 
+                       HorizontalOptions="StartAndExpand"
+                       WidthRequest="170">
                 </Image>
                 <Label Text="Usuario" 
                        TextColor="Black" 
@@ -39,12 +41,12 @@
                        FontAttributes="Bold" 
                        FontSize="Large">
                 </Label>
-                <Picker Title="Seleccione Finca"
+                <Picker Title="Seleccione Empacadora"
                             FontSize="Large"
                             FontAttributes="Bold"
-                            ItemsSource="{Binding ListaEmpacadora, Mode=TwoWay}"
-                            ItemDisplayBinding="{Binding Nombre, Mode=TwoWay}"
-                            SelectedItem="{Binding SelectedEmpacadora, Mode=TwoWay}"
+                            ItemsSource="{Binding ListaEmpacadora}"
+                            ItemDisplayBinding="{Binding Nombre}"
+                            SelectedItem="{Binding SelectedEmpacadora}"
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="Center"
                             TitleColor="DarkGray"
@@ -55,7 +57,9 @@
                            HorizontalOptions="StartAndExpand"
                            TextColor="White">
                     </Label>
-                    <Switch HorizontalOptions="End" IsToggled="{Binding IsRemembered, Mode=TwoWay}"></Switch>
+                    <Switch HorizontalOptions="End" 
+                            IsToggled="{Binding IsRemembered, Mode=TwoWay}">                        
+                    </Switch>
                 </StackLayout>
                 <ActivityIndicator IsRunning="{Binding IsRunning, Mode=TwoWay}"
                                    VerticalOptions="CenterAndExpand">

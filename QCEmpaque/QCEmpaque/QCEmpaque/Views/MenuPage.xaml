@@ -27,18 +27,18 @@
                              WidthRequest="15"
                              HeightRequest="10"/>
                     <Label Text="Bienvenido(a):"
-                   FontAttributes="Bold"
-                   FontSize="Small"
-                   TextColor="White"
-                   HorizontalOptions="Start">
+                           FontAttributes="Bold"
+                           FontSize="Small"
+                           TextColor="White"
+                           HorizontalOptions="Start">
                     </Label>
                     <Label Text="{Binding UserName}"
-                   FontAttributes="Bold"
-                   FontSize="Small"
-                   TextColor="White">
+                           FontAttributes="Bold"
+                           FontSize="Small"
+                           TextColor="White">
                     </Label>
                 </StackLayout>
-            </Frame>
+            </Frame>           
             <ListView ItemsSource="{Binding Menus}"                      
                       HasUnevenRows="True"                      
                       RefreshCommand="{Binding RefreshCommandMenu, Mode=TwoWay}"
@@ -47,10 +47,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Frame CornerRadius="10"
+                            <Frame CornerRadius="15"
                                    HasShadow="True"
                                    Margin="5"
-                                   BackgroundColor="DarkGray"
+                                   BackgroundColor="#107C41"
                                    Padding="2">
                                 <Grid>
                                     <Grid.GestureRecognizers>

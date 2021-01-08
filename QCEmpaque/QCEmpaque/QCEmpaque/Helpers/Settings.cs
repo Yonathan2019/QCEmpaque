@@ -20,6 +20,7 @@
         const string idUser = "IdUser";
         const string idPerfil = "idPerfil";
         const string idFinca = "";
+        const string idEmpacadora = "";
         static readonly string stringDefault = string.Empty;
         static readonly int intDefault = 0;
         public static string User
@@ -55,7 +56,6 @@
                 AppSettings.AddOrUpdateValue(idPerfil, value);
             }
         }
-
         public static int IdFinca
         {
             get
@@ -67,7 +67,17 @@
                 AppSettings.AddOrUpdateValue(idFinca, value);
             }
         }
-
+        public static int IdEmpacadora
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(idEmpacadora, intDefault);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(idEmpacadora, value);
+            }
+        }
         public static string UserName
         {
             get

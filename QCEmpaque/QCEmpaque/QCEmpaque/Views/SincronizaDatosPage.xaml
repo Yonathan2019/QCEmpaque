@@ -1,12 +1,93 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="QCEmpaque.Views.SincronizaDatosPage">
+             x:Class="QCEmpaque.Views.SincronizaDatosPage"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}"
+             Title="Sincronizacion de Datos">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Margin="10" BindingContext="{Binding Sincroniza }">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button Text="Descargar Datos"             
+                        BorderRadius="10"
+                        HeightRequest="40"
+                        HorizontalOptions="Center"
+                        BorderColor="White"                    
+                        FontSize="Small"                        
+                        BackgroundColor="ForestGreen"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        IsEnabled="{Binding IsEnable, Mode=TwoWay}"
+                        Command="{Binding DescargarCommand }">
+                </Button>
+                <Button Text="Subir Datos"
+                        HeightRequest="40"
+                        BorderRadius="10"
+                        HorizontalOptions="Center"
+                        BorderColor="White"                    
+                        FontSize="Small"                        
+                        BackgroundColor="#0D8BE7"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        IsEnabled="{Binding IsEnable, Mode=TwoWay}"
+                        Command="{Binding PublicaCommand }">
+                </Button>
+            </StackLayout>
+            <BoxView HeightRequest="5" 
+                     BackgroundColor="#0D8BE7" 
+                     HorizontalOptions="FillAndExpand" 
+                     Margin="5"
+                     CornerRadius="5"/>
+            <!--<ActivityIndicator IsRunning="{Binding IsRunning, Mode=TwoWay}"
+                               VerticalOptions="CenterAndExpand">
+            </ActivityIndicator>-->
+            <ListView ItemsSource="{Binding Procesos }"                      
+                                      HasUnevenRows="True"
+                                      IsRefreshing="{Binding IsRefreshin, Mode=TwoWay}"                      
+                                      SeparatorVisibility="None"
+                                      RowHeight="25"                                      
+                                      MinimumHeightRequest="100">
+                <ListView.Header>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Text="Proceso" HorizontalOptions="Start" 
+                               Grid.Column="0" Grid.Row="0" TextColor="#FF5313" FontAttributes="Bold"/>
+                        <Label Text="Estado" HorizontalOptions="Start" 
+                               Grid.Column="1" Grid.Row="0" TextColor="#FF5313" FontAttributes="Bold"/>
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Margin="3, 0, 3, 0"
+                                                   Padding="2"
+                                                   CornerRadius="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="0.3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" FontAttributes="Bold"
+                                                    FontSize="Small"
+                                                    Text="{Binding Proceso, Mode=TwoWay}"
+                                                    TextColor="Gray">
+                                    </Label>
+                                    <Label Grid.Column="1" FontAttributes="Bold"
+                                                    FontSize="Small"
+                                                    Text="{Binding Estado, Mode=TwoWay}"
+                                                    TextColor="Gray">
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
