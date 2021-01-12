@@ -25,9 +25,15 @@
             var data = dataService.Get<EncabezadoIndicador>(false);
             return data.AsEnumerable().FirstOrDefault(l => l.Bach == bach);             
         }
+        public List<EncabezadoIndicador> GetEncabezado(int FK_Proceso)
+        {
+            var data = dataService.Get<EncabezadoIndicador>(false);
+            var resul = data.AsEnumerable().Where(l => l.FK_Proceso == FK_Proceso);
+            return resul.ToList();
+        }
         public List<Estante> GetEstanteByEmpacadora()
         {
-            return dataService.Get<Estante>(false).Where(e => e.IdEmpacadora == Settings.IdEmpacadora).ToList();
+            return dataService.Get<Estante>(false).Where(e => e.IdEmpacadora.Equals(Settings.IdEmpacadora)).ToList();
         }
     }
 }

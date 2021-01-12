@@ -20,6 +20,11 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 <StackLayout Grid.Column="0" Grid.Row="0">
                                     <Label Text="Fecha de Empaque"
                                            FontAttributes="Bold"
@@ -47,41 +52,72 @@
                                     <DatePicker FontSize="Small"
                                                 Date="{Binding FechaAlmacenamiento, Mode=TwoWay}"></DatePicker>
                                 </StackLayout>
-                                <StackLayout Grid.Column="1" Grid.Row="1">                                    
-                                    <Label Text="Leer Codigo"
+                                <StackLayout Grid.Column="1" Grid.Row="1">
+                                    <Label Text="Cliente"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                    <Picker Title="Seleccione Estante"
+                                        FontSize="Small"
+                                        ItemsSource="{Binding ListCliente, Mode=TwoWay}"
+                                        ItemDisplayBinding="{Binding Nombre, Mode=TwoWay}"
+                                        SelectedItem="{Binding SelectCliente, Mode=TwoWay}"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="Center">
+                                    </Picker>                                                                     
+                                </StackLayout>
+                                <Grid Grid.Column="0"
+                                      Grid.ColumnSpan="2"
+                                      Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.7*"/>
+                                        <ColumnDefinition Width="0.3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout Grid.Column="0"
+                                             Grid.Row="0">
+                                        <Label Text="Codigo Unico(Bach)"
+                                           FontAttributes="Bold"
+                                           FontSize="Small"></Label>
+                                        <Entry Text="{Binding Codigo, Mode=TwoWay}">
+                                        </Entry>
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1"
+                                                 Grid.Row="0">
+                                        <Label Text="Leer Codigo"
                                            FontAttributes="Bold"
                                            FontSize="Small"
                                            TextColor="#3A705D"
-                                           HorizontalTextAlignment="Center">                                        
-                                    </Label>
-                                    <Image Source="ic_codigo_de_barras">
-                                       <Image.GestureRecognizers>
-                                          <TapGestureRecognizer
+                                           HorizontalTextAlignment="Center">
+                                        </Label>
+                                        <Image Source="ic_codigo_de_barras">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer
                                              Command="{Binding LeerCommand}"
                                              NumberOfTapsRequired="1" />
-                                         </Image.GestureRecognizers>
-                                    </Image>                                    
-                                </StackLayout>
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                    </StackLayout>
+                                </Grid>                                
                                 <StackLayout Grid.Column="0"
-                                             Grid.Row="2"
-                                             Grid.ColumnSpan="2">
-                                    <Label Text="Codigo Unico(Bach)"
-                                           FontAttributes="Bold"
-                                           FontSize="Small"></Label>
-                                    <Entry Text="{Binding Codigo, Mode=TwoWay}">
-                                    </Entry>
-                                </StackLayout>
-                                <StackLayout Grid.Column="0"
-                                             Grid.Row="3"
-                                             Grid.ColumnSpan="2">
+                                             Grid.Row="4">
                                     <Button Text="Guardar"
                                             IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
                                             Style="{StaticResource Key=btn_guardar}"
                                             Command="{Binding AddCommand}"></Button>
                                 </StackLayout>
+                                <StackLayout Grid.Column="1"
+                                             Grid.Row="4">
+                                    <Button Text="Eliminar"
+                                            BackgroundColor="Red"
+                                            HorizontalOptions="FillAndExpand"
+                                            TextColor="White"
+                                            BorderRadius="10"
+                                            BorderColor="White"                                   
+                                            Command="{Binding DeleteCommand }">
+                                    </Button>
+                                </StackLayout>
                                 <StackLayout Grid.Column="0" 
                                              Grid.ColumnSpan="2"
-                                             Grid.Row="4"
+                                             Grid.Row="3"
                                              Margin="0"
                                              Padding="0">
                                     <Label Text="Mis Cajas Almacenadas" 
@@ -94,58 +130,99 @@
                                 </StackLayout>
                             </Grid>
                         </StackLayout>
-                        <StackLayout Grid.Row="1">
-                            <CollectionView ItemsSource="{Binding Registros }"
-                                            SelectedItem="SelectRegistro"
-                                            SelectionMode="Multiple">
-                                <CollectionView.ItemTemplate>
+                        <StackLayout Grid.Row="1">                          
+                            <ListView ItemsSource="{Binding Registros }"                      
+                                      HasUnevenRows="True"
+                                      IsRefreshing="{Binding IsRefreshin, Mode=TwoWay}"                                                                                                          
+                                      MinimumHeightRequest="100"
+                                      SelectedItem="{Binding SelectRegistro, Mode=TwoWay}">                                
+                                <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Frame Padding="5"
-                                               CornerRadius="5"
+                                        <ViewCell>                                            
+                                            <!--<Frame Margin="3, 0, 3, 0"
+                                                   Padding="2"
+                                                   CornerRadius="3">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="0.35*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" FontAttributes="Bold"
+                                                    FontSize="Small"
+                                                    Text="{Binding Jornal1, Mode=TwoWay}"
+                                                    TextColor="Gray">
+                                                    </Label>
+                                                    <Label Grid.Column="1" FontAttributes="Bold"
+                                                    FontSize="Small"
+                                                    Text="{Binding Jornal2, Mode=TwoWay}"
+                                                    TextColor="Gray">
+                                                    </Label>
+                                                    <Label Grid.Column="2" FontAttributes="Bold"
+                                                    FontSize="Small"
+                                                           HorizontalOptions="EndAndExpand"
+                                                    Text="{Binding Variable1, Mode=TwoWay}"
+                                                    TextColor="Gray"></Label>
+                                                </Grid>
+                                            </Frame>-->
+                                            <Frame Padding="5"
+                                               CornerRadius="10"
                                                IsClippedToBounds="False">
-                                            <Grid HeightRequest="100">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width=".1*"/>
-                                                    <ColumnDefinition Width=".3*"/>
-                                                    <ColumnDefinition Width=".6*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height=".5*"/>
-                                                    <RowDefinition Height=".5*"/>
-                                                </Grid.RowDefinitions>
-                                                <Label Text="{Binding Fila }"
-                                                       FontSize="Large"                                                       
+                                                <Grid HeightRequest="100">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width=".05*"/>
+                                                        <ColumnDefinition Width=".3*"/>
+                                                        <ColumnDefinition Width=".65*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height=".5*"/>
+                                                        <RowDefinition Height=".5*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Label Text="{Binding Fila }"
+                                                       FontSize="Medium"                                                       
                                                        FontAttributes="Bold"                                                       
                                                        TextColor="#3A705D"
                                                        Grid.RowSpan="2"
                                                        Grid.Column="0"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"></Label>
-                                                <Label Text="{Binding Variable2}"
+                                                    <Label Text="{Binding Variable2}"
                                                        FontSize="Medium"                                                       
                                                        FontAttributes="Bold"                                                       
-                                                       TextColor="#3A705D"
-                                                       Grid.RowSpan="2"
+                                                       TextColor="#3A705D"                                                       
                                                        Grid.Column="1"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"></Label>
-                                                <Label Grid.Column="2"
+                                                    <Label Grid.Column="1"
+                                                       Grid.Row="1"
+                                                       Text="{Binding Variable3}"
+                                                       FontSize="Small"
+                                                       FontAttributes="Bold"
+                                                       VerticalTextAlignment="Center"
+                                                       TextColor="DarkGray"
+                                                       HorizontalTextAlignment="End"></Label>
+                                                    <Label Grid.Column="2"
                                                        Grid.Row="0"
                                                        Text="{Binding Variable1}"
                                                        FontSize="Small"
                                                        FontAttributes="Bold"                                                       
-                                                       TextColor="Black"></Label>
-                                                <Label Grid.Column="2"
+                                                       TextColor="Black"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalTextAlignment="End"></Label>
+                                                    <Label Grid.Column="2"
                                                        Grid.Row="1"
-                                                       Text="{Binding Fecha}"
-                                                       FontSize="Medium"
+                                                       Text="{Binding Cliente }"
+                                                       FontSize="Small"
                                                        FontAttributes="Bold"                                                       
-                                                       TextColor="DarkGray"></Label>
-                                            </Grid>
-                                        </Frame>
+                                                       TextColor="OrangeRed"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalTextAlignment="End"></Label>
+                                                </Grid>
+                                            </Frame>
+                                        </ViewCell>
                                     </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                                </ListView.ItemTemplate>                                
+                            </ListView>
                         </StackLayout>
                     </Grid>
                 </StackLayout>

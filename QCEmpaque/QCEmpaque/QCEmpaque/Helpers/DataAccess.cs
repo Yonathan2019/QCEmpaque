@@ -25,6 +25,7 @@
             connection.CreateTable<MenuLocal>();
             connection.CreateTable<EncabezadoIndicador>();
             connection.CreateTable<Estante>();
+            connection.CreateTable<Clientes>();
         }
 
         public void Insert<T>(T model)

@@ -21,6 +21,7 @@
         public string Variable1 { get; set; }
         public string Variable2 { get; set; }
         public string Variable3 { get; set; }
+        public string Cliente { get; set; }
         public int IdD { get; set; }
         public int Fila { get; set; }
         public string Valvula { get; set; }

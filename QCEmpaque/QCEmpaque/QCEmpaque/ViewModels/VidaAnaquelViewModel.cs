@@ -13,6 +13,7 @@
     using QCEmpaque.Helpers;
     using System.Linq;
     using System.Collections.ObjectModel;
+    using System.Globalization;
 
     public class VidaAnaquelViewModel : BaseViewModel
     {
@@ -24,7 +25,9 @@
         #region Atributos
         public string _codigo;
         public List<Estante> _listEstante;
+        public List<Clientes> _listCliente;
         public Estante _selectEstante;
+        public Clientes _selectCliente;
         public DateTime _fechaEmpaque = DateTime.Now;
         public DateTime _fechaAlmacenamiento = DateTime.Now;
         public string _guid;
@@ -86,6 +89,14 @@
                 SetValue(ref this._listEstante, value);
             }
         }
+        public List<Clientes> ListCliente
+        {
+            get { return this._listCliente; }
+            set
+            {
+                SetValue(ref this._listCliente, value);
+            }
+        }
         public Estante SelectEstante
         {
             get { return this._selectEstante; }
@@ -94,6 +105,17 @@
                 if (this._selectEstante != value)
                 {
                     SetValue(ref this._selectEstante, value);
+                }
+            }
+        }
+        public Clientes SelectCliente
+        {
+            get { return this._selectCliente; }
+            set
+            {
+                if (this._selectCliente != value)
+                {
+                    SetValue(ref this._selectCliente, value);
                 }
             }
         }
@@ -113,13 +135,14 @@
         #endregion
 
         #region Constructor
-
         public VidaAnaquelViewModel()
         {
             this.apiService = new ApiService();
             this.dataService = new DataService();
             this.ListEstante = new List<Estante>();
+            this.ListCliente = new List<Clientes>();
             this.LlenarStantes();
+            this.LlenarClientes();
             this.Registros = new ObservableCollection<EncabezadoDetalleGenerico>();
             Select();
         }
@@ -127,7 +150,6 @@
         #endregion
 
         #region MEtodos
-
         public async void ScannerCodigo()
         {
             try
@@ -156,6 +178,10 @@
         public void LlenarStantes()
         {            
             this.ListEstante = Tools.GetInstance.GetEstanteByEmpacadora();
+        }
+        public void LlenarClientes()
+        {
+            this.ListCliente = dataService.Get<Clientes>(false).OrderBy(s => s.Nombre).ToList();
         }
         public async void Add()
         {
@@ -205,32 +231,40 @@
 
                 if (existe == null)
                 {
-                    Guid_ = Guid.NewGuid().ToString();
-                    var user = dataService.First<UserLocal>(false);                    
-                    EncabezadoIndicador encabezado = new EncabezadoIndicador()
+                    var confirm = await Application.Current.MainPage.DisplayAlert(
+                                      "Guardar", "Desea guardar esta muestra?", "Yes", "No");
+                    if (confirm)
                     {
-                        Guid = Guid_,
-                        FK_Proceso = Indicadores.VidaAnaquel,
-                        Fecha = this.FechaEmpaque,
-                        IdVariedad = -1,
-                        IdCiclo = -1,
-                        IdUT = -1,
-                        IdCaporal = -1,
-                        IdJornal1 = -1,
-                        IdJornal2 = -1,
-                        Observaciones = string.Empty,
-                        Usuario = user.NombreUsuario,
-                        IdEvaluador = int.Parse(user.CodeEmpleado),
-                        FechaSiembra = this.FechaAlmacenamiento,
-                        IdValvula = this.SelectEstante.Id,
-                        Bach = this.Codigo,
-                        FechaHoraCreo = DateTime.Now
-                    };
+                        Guid_ = Guid.NewGuid().ToString();
+                        var user = dataService.First<UserLocal>(false);
+                        EncabezadoIndicador encabezado = new EncabezadoIndicador()
+                        {
+                            Guid = Guid_,
+                            FK_Proceso = Indicadores.VidaAnaquel,
+                            Fecha = this.FechaEmpaque,
+                            IdVariedad = -1,
+                            IdCiclo = -1,
+                            IdUT = -1,
+                            IdCaporal = -1,
+                            IdJornal1 = -1,
+                            IdJornal2 = -1,
+                            Observaciones = string.Empty,
+                            Usuario = user.NombreUsuario,
+                            IdEvaluador = int.Parse(user.CodeEmpleado),
+                            FechaSiembra = this.FechaAlmacenamiento,
+                            IdValvula = this.SelectEstante.Id,
+                            Bach = this.Codigo,
+                            FechaHoraCreo = DateTime.Now,
+                            IdCalidad = SelectCliente.Id
+                        };
 
-                    var id = this.dataService.Insert(encabezado).GetHashCode();
-                    this.SelectEstante = null;
-                    this.Codigo = string.Empty;
-                    this.IsEnabled = true;
+                        var id = this.dataService.Insert(encabezado).GetHashCode();
+                        this.SelectEstante = null;
+                        this.Codigo = string.Empty;
+                        this.IsEnabled = true;
+                        Select();
+                    }
+                   
                 }
                 else
                 {
@@ -256,19 +290,18 @@
                             FechaSiembra = this.FechaAlmacenamiento,
                             IdValvula = this.SelectEstante.Id,
                             Bach = existe.Bach,
-                            FechaHoraCreo = DateTime.Now
+                            FechaHoraCreo = DateTime.Now,
+                            IdCalidad = SelectCliente.Id
                         };
 
                         this.dataService.Update(encabezado);
                         this.IsEnabled = true;
                         this.SelectEstante = null;
                         this.Codigo = string.Empty;
+                        this.SelectCliente = null;
+                        Select();
                     }
                 }
-
-                Select();
-
-
             }
             catch (Exception ex)
             {
@@ -286,33 +319,38 @@
             {
                 if (FechaAlmacenamiento != null && this.FechaEmpaque != null)
                 {                    
-                    var data = dataService.Get<EncabezadoIndicador>(false).Where(i => i.FK_Proceso == Indicadores.VidaAnaquel);
+                    var data = dataService.Get<EncabezadoIndicador>(false).Where(i => i.FK_Proceso == Indicadores.VidaAnaquel)
+                        .Where(f => f.Fecha.ToString("dd/MM/yyyy").Equals(FechaEmpaque.ToString("dd/MM/yyyy")));
                     if (data.Count().Equals(0)) { this.Registros.Clear(); return; }
                     
                     var h = data;
-                    var stantes = dataService.Get<Estante>(false);
+                    var stantes = dataService.Get<Estante>(false);                    
 
                     if (FechaAlmacenamiento != null && !h.Count().Equals(0))
                     {
                         var query = from est in stantes.AsEnumerable()
                                     join dataencabezado in h.AsEnumerable()   
                                     on est.Id equals dataencabezado.IdValvula
+                                    join cli in ListCliente.AsEnumerable() on dataencabezado.IdCalidad equals cli.Id
                                     select new EncabezadoDetalleGenerico
                                     {
                                         Id = dataencabezado == null ? -1 : dataencabezado.Id,
                                         Guid = dataencabezado.Guid,
                                         Variable1 = dataencabezado.Bach,                                        
                                         Variable2 = est.Nombre,
-                                        Fecha = dataencabezado.FechaHoraCreo
+                                        Fecha = dataencabezado.FechaHoraCreo,
+                                        Cliente = cli.Nombre
+                                        
                                     } into ord
-                                    orderby ord.Id descending
+                                    orderby ord.Id ascending
                                     select ord;
 
-                        int count = 0;
+                        
                         this.Registros.Clear();
 
-                        if (!query.AsEnumerable().Any())
+                        if (!query.Count().Equals(0))
                         {
+                            int count = 0;
                             foreach (var item in query.AsEnumerable())
                             {
                                 count = count + 1;
@@ -323,7 +361,9 @@
                                     Guid = item.Guid,
                                     Variable1 = item.Variable1,
                                     Variable2 = item.Variable2,
-                                    Fecha = item.Fecha                                    
+                                    Fecha = item.Fecha,
+                                    Variable3 = item.Fecha.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture),
+                                    Cliente = item.Cliente
                                 });
 
                             }
@@ -347,6 +387,40 @@
                 return;
             }
         }
+        private async void Delete()
+        {
+            try
+            {
+                var confirm = await Application.Current.MainPage.DisplayAlert(
+                                      "Eliminar", "Desea eliminar este registro?", "Yes", "No");
+                if (confirm)
+                {
+                    if (this.SelectRegistro != null)
+                    {
+                        var encabezado = dataService.Find<EncabezadoIndicador>(this.SelectRegistro.Id, false);                       
+                        dataService.Delete(encabezado);                       
+                        Select();
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert(
+                                        "Error al borrar",
+                                        "Debe seleccionar un registro",
+                                        "Aceptar");
+                        return;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                                        "Error al borrar",
+                                        ex.ToString(),
+                                        "Aceptar");
+                return;
+            }
+        }
 
         #endregion
 
@@ -355,12 +429,14 @@
         {
             get { return new RelayCommand(ScannerCodigo); }
         }
-
         public ICommand AddCommand
         {
             get { return new RelayCommand(Add); }
         }
-
+        public ICommand DeleteCommand
+        {
+            get { return new RelayCommand(Delete); }
+        }
         #endregion
     }
 }

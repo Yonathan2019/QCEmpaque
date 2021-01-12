@@ -86,9 +86,9 @@
 
                 var controller = "api/dm/GetEstantesEmpacadora";
                 var response = await this.apiService.MyGetList<Estante>(UrlConexion.UrlConx, controller);
-                List<Estante> empleados = (List<Estante>)response.Result;
+                List<Estante> estantes = (List<Estante>)response.Result;
 
-                if (empleados.Count.Equals(0))
+                if (estantes.Count.Equals(0))
                 {
                     await Application.Current.MainPage.DisplayAlert(
                         "Error",
@@ -100,7 +100,7 @@
                 }
                 //Delete and update tabla local
                 this.dataService.DeleteAllTable<Estante>();
-                this.dataService.SaveBulk(empleados);
+                this.dataService.SaveBulk(estantes);
                 this.IsEnable = true;
                 UserDialogs.Instance.HideLoading();
 
@@ -111,6 +111,61 @@
             {
                 await Application.Current.MainPage.DisplayAlert(
                         "Problemas para Descargar datos de Estantes",
+                        ex.Message.ToString(),
+                        "Aceptar");
+                this.isRunning = false;
+                this.IsEnable = true;
+                UserDialogs.Instance.HideLoading();
+                return;
+            }
+
+        }
+        private async void GetClientes()
+        {
+            try
+            {
+                UserDialogs.Instance.ShowLoading("Descargando");
+                this.IsEnable = false;
+                var connection = await apiService.CheckConnection();
+                if (!connection.IsSuccess)
+                {
+                    this.IsEnable = true;
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        "Error Get Clientes" + connection.Message,
+                        "Aceptar");
+                    this.IsRunning = false;
+                    UserDialogs.Instance.HideLoading();
+                    return;
+                }
+
+                var controller = "api/Mercadeo/GetClientes";
+                var response = await this.apiService.MyGetList<Clientes>(UrlConexion.UrlConx, controller);
+                List<Clientes> clientes = (List<Clientes>)response.Result;
+
+                if (clientes.Count.Equals(0))
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        "Problemas para Descargar datos de Clientes",
+                        "Aceptar");
+                    this.IsEnable = true;
+                    UserDialogs.Instance.HideLoading();
+                    return;
+                }
+                //Delete and update tabla local
+                this.dataService.DeleteAllTable<Clientes>();
+                this.dataService.SaveBulk(clientes);
+                this.IsEnable = true;
+                UserDialogs.Instance.HideLoading();
+
+                this.AddProceso("Descarga de Clientes", "Finalizado");
+                //this.Proceso5 = " Finalizada";
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                        "Problemas para Descargar datos de Clientes",
                         ex.Message.ToString(),
                         "Aceptar");
                 this.isRunning = false;
@@ -142,6 +197,7 @@
             {
                 this.Procesos.Clear();
                 this.GetEstante();
+                this.GetClientes();
             }
             catch (Exception ex)
             {
@@ -159,7 +215,73 @@
         /// </summary>
         private void PublicaInformacion()
         {
-            this.Procesos.Clear();            
+            this.Procesos.Clear();
+            this.PublicaMuestraVidaAnaquel();
+        }
+
+        private async void PublicaMuestraVidaAnaquel()
+        {
+            try
+            {
+                var Encabezado = Tools.GetInstance.GetEncabezado(Indicadores.VidaAnaquel);
+                var url = "api/QC/PostVidaAnaque";
+                var urlbase = UrlConexion.UrlConx;
+                if (!Encabezado.Count.Equals(0))
+                {
+                    UserDialogs.Instance.ShowLoading("Subiendo...");
+                    List<SendData> data = new List<SendData>();
+                    foreach (var item in Encabezado)
+                    {
+                        var send = new SendData()
+                        {
+                            Encabezado = item                           
+                        };
+
+                        data.Add(send);
+                    }
+                    var connection = await apiService.CheckConnection();
+                    if (!connection.IsSuccess)
+                    {
+                        await Application.Current.MainPage.DisplayAlert(
+                            "Error",
+                            connection.Message,
+                            "Aceptar");
+                        UserDialogs.Instance.HideLoading();
+                        return;
+                    }
+
+                    var response = await this.apiService.MyPost(urlbase, url, data);
+
+                    if (!response.IsSuccess)
+                    {
+                        await Application.Current.MainPage.DisplayAlert(
+                        "Error de publicacion",
+                        "No se han subido todos sus datos Vida de Anaquel",
+                        "Aceptar");
+                        UserDialogs.Instance.HideLoading();
+                        return;
+                    }
+
+                    foreach (var item in data)
+                    {
+                        this.dataService.Delete(item.Encabezado);                        
+                    }
+
+                    this.AddProceso("Publicacion Vida de Anaquel", "Finalizado");
+                    UserDialogs.Instance.HideLoading();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                                        "Error de subir datos de Vida de Anaquel",
+                                         ex.Message.ToString(),
+                                        "Aceptar");
+                UserDialogs.Instance.HideLoading();
+                return;
+            }
         }
         #endregion
 
